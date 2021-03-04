@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Joke</title>
+</head>
+<body style="background-color: rgba(0, 0, 0, 0);">
+    <script src="https://github.com/tmijs/tmi.js/releases/download/1.7.2/tmi.min.js"></script>
+    <script>
+        const CHANNEL = "fendull";
+        const BOT_USERNAME = "fendull";
+        const OAUTH_TOKEN = "oauth:i3nsh7pih01mrphrrcy24qjxae53fr";
+        const TIME_UNTIL_PUNCHLINE = 20*1000;
+
+        const opts = {
+            identity: {
+                username: BOT_USERNAME,
+                password: OAUTH_TOKEN
+            },
+            channels: [CHANNEL]
+        };
+        const client = new tmi.client(opts);
+        function onConnectedHandler(addr, port) {
+            fetch("https://official-joke-api.appspot.com/random_joke").then(data => data.json()).then(joke => {
+                client.say(CHANNEL, joke.setup);
+                setTimeout(()=> {client.say(CHANNEL, joke.punchline)}, TIME_UNTIL_PUNCHLINE);
+            });
+        }
+        client.on('connected', onConnectedHandler);
+        client.connect();
+    </script>
+</body>
+</html>
